@@ -14,11 +14,11 @@ class HibiraKtorTest {
     fun chatRoutesAreSigned() = FakeApi().use { api ->
         runBlocking {
             val chat = HibiraKtor(api.client, null, null).chat
-            chat.putConversation("order-1", name = "Order 1", members = listOf("u1", "u2"))
+            chat.putConversation("order 1", name = "Order 1", members = listOf("u1", "u2"))
             chat.getConversation("order-1")
             chat.deleteConversation("order-1")
             chat.addMembers("c1", listOf("u3"))
-            chat.removeMember("c1", "u3")
+            chat.removeMember("c1", "u/3")
             chat.sendMessage("c1", "u1", "Hi", push = "offline")
             chat.listMessages("c1", after = 5, limit = 20)
             chat.markRead("c1", "u1", 7)
@@ -27,12 +27,12 @@ class HibiraKtorTest {
             chat.request("POST", "/conversations/c1/typing")
         }
         val s = api.seen
-        assertEquals("PUT" to "/apps/1/chat/conversations/order-1", s[0].method to s[0].path)
+        assertEquals("PUT" to "/apps/1/chat/conversations/order%201", s[0].method to s[0].path)
         assertEquals(json.readTree("""{"name":"Order 1","members":["u1","u2"]}"""), json.readTree(s[0].body))
         assertEquals("GET" to "", s[1].method to s[1].body)
         assertEquals("DELETE", s[2].method)
         assertEquals(json.readTree("""{"user_ids":["u3"]}"""), json.readTree(s[3].body))
-        assertEquals("/apps/1/chat/conversations/c1/members/u3", s[4].path)
+        assertEquals("/apps/1/chat/conversations/c1/members/u%2F3", s[4].path)
         assertEquals(json.readTree("""{"user_id":"u1","text":"Hi","push":"offline"}"""), json.readTree(s[5].body))
         assertEquals(mapOf("after" to "5", "limit" to "20"), userQuery(s[6]))
         assertEquals(json.readTree("""{"user_id":"u1","seq":7}"""), json.readTree(s[7].body))

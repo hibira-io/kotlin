@@ -10,7 +10,7 @@ repositories {
 val ktorVersion = "3.6.2"
 
 dependencies {
-    api("io.hibira:hibira-java:0.3.0")
+    api("io.hibira:hibira-java:0.3.1")
     api("io.ktor:ktor-server-core:$ktorVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.11.0")
 
